@@ -1,110 +1,77 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="title" content="Light" />
-    <meta name="description" content="A fast, simple, and highly customizable proxy." />
-    <title>Bing</title>
-    <link rel="stylesheet" href="/assets/css/main.css" />
-    <link rel="icon" href="https://www.google.com/favicon.ico" type="image/x-icon" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="ははは"/>
+  <title>google</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <script defer src="/admin-notices-widget.js"></script>
 </head>
+</head>
+<body>
+  <div id="announcement-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 9999; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+  <div style="background: white; border-radius: 16px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden; position: relative; animation: slideIn 0.3s ease;">
+    <!-- 閉じるボタン -->
+    <button onclick="document.getElementById('announcement-modal').style.display='none';" style="position: absolute; top: 12px; left: 12px; background: none; border: none; font-size: 24px; color: #555; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background-color: #f0f0f0; transition: background 0.2s;">
+      ×
+    </button>
+    
+    <!-- お知らせ内容 -->
+    <div style="padding: 32px 24px 24px; color: #333; text-align: center;">
+      <h2 style="margin: 0 0 16px 0; font-size: 20px; color: #007BFF;">📢 このサイトについて</h2>
+      <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; text-align: left;">
+        このサイトは埋め込み機能を使わずに作られたjwebです。<br>サイトを軽くするためにゲーム機能は消しました。<br>
+        自分で作ってみたいよ～っていう人におすすめな感じかな<br>まあ私chocolate-wakameの最新版は<a href="https://jweb-new-11-22.onrender.com/">これです</a><br>
+        最新の機能を求める人はこっちを使ってね。<br>おいおい作り方などを載せるつもりなのでよろしく<br>
+        聞きたいことや話したいことがある人は<a herf="https://scratch.mit.edu/projects/1236642406/">こちらまで</a>よろしく<br><br>
+        <a href="https://scratch.mit.edu/users/chocolate-wakame-/">chocolate-wakame-</a>
+      </p>
+    </div>
+  </div>
+</div>
 
-<body onload="startTime()">
-    <center>
-        <h3 style="
-                    margin-bottom: 30px;
-                    text-align: left;
-                    margin-left: 1%;
-                    margin-top: 10px;
-                ">
-        </h3>
-        Japanese Proxy Web
-        <div class="card" style="position: fixed">
-            
-                </h2>
-                <div class="searchbar" style="
-                            position: absolute;
-                            left: 50%;
-                            top: 50%;
-                            transform: translate(-50%, -50%);
-                        ">
-                    <div class="searchbar-wrapper">
-                        <div class="searchbar-left">
-                            <div class="search-icon-wrapper">
-                                <span class="search-icon searchbar-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                        <path
-                                            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z">
-                                        </path>
-                                    </svg>
-                                </span>
-                            </div>
-                        </div>
+<!-- ポップアップ表示アニメーション -->
+<style>
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+<body>
+  <header>
+    <h1><a href="/">シンプルなJapanese Web</a></h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/proxy">Proxy</a>
+      <a href="/youtube">YouTube</a>
+    </nav>
+  </header>
 
-                        <form id="uv-form" class="searchbar-center">  
-                          <div class="searchbar-input-spacer"></div>
-                            <input id="uv-address" type="text" class="searchbar-input"
-                                maxlength="2048" autocapitalize="off" autocomplete="off" title="Search" role="combobox"
-                                placeholder="Search Anything" />
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <div class="blob"></div>
-        </div>
-        <center></center>
-    </center>
-    <div style="position: absolute; bottom: 20px; left: 20px">
-        <label class="container" title="Click for dark/light mode">
-            <input checked="checked" type="checkbox" id="backgroundToggle" />
-            
-        </label>
-         <div
-                class="group"
-                style="
-                    position: fixed;
-                    bottom: 4px;
-                    left: 43px;
-                    padding-top: 2px;
-                    padding-left: 2px;
-                    padding-right: 2px;
-                ">
-                
-            </div>   
-        </div>
-        <div style="position: absolute; top: 10px; right: 10px" class="group">
-            <img
-                src="/assets/imgs/help.png"
-                alt="Question mark"
-                title="What is Light?"
-                class="icon"
-                style="width: 23px"
-                onclick="alert('ようこそJapanese Proxy Web略してJPWへ！履歴無しで見るには右上の目を押してね。');" />
-            <img
-                src="/assets/imgs/hide.png"
-                alt="Cloak"
-                title="Cloak"
-                class="icon"
-                style="width: 23px"
-                onclick="openGame();" />
-        </div>
-        <div
-            style="
-                position: absolute;
-                bottom: 10px;
-                right: 10px;
-                padding-top: 5px;
-                padding-bottom: 2px;
-            ">
-            <div id="background"></div>
-            <input type="file" id="file-input" accept="image/*" />
-        </div></body>
-<script src="/uv/uv.bundle.js"></script>
-<script src="/uv/uv.config.js"></script>
-<script src="/assets/js/index.js"></script>
-<script src="/assets/js/main.js"></script>
+  <main>
+    <section class="hero">
+      <h2>ようこそ！</h2>
+      <p>一応つくりました？</p>
+    </section>
 
+    <section class="posts">
+      <article>
+        <h3><a href="/proxy">ぷろきし</a></h3>
+        <p>lightのやつをちょちょいと借りパクして作りました。履歴無しで見るには右上のボタン押してね。<br>たまに文字化けするかも。ごめんね</p>
+      </article>
+      <article>
+        <h3><a href="/youtube">しあtube</a></h3>
+        <p>しあtube</p>
+      </article>
+      <article>
+        <h3><a href="/blog">運営からのお知らせ</a></h3>
+        <p>運営からのメッセージ。</p>
+      </article>
+    </section>
+  </main>
 
+  <footer>
+    <p>&copy; 2025 JW</p>
+  </footer>
+</body>
 </html>

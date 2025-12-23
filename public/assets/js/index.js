@@ -52,7 +52,7 @@ class crypts {
 function search(input) {
   input = input.trim();  // Trim the input to remove any whitespace
   // Retrieve the search engine URL template from localStorage or use default
-  const searchTemplate = 'https://duckduckgo.com/?q=%s';
+  const searchTemplate = 'https://google.com/search?q=%s';
 
   try {
     // Try to treat the input as a URL
@@ -84,7 +84,7 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker registration successful with scope: ', registration.scope);
       form.addEventListener('submit', async (event) => {
         event.preventDefault();
-
+        
         let encodedUrl = swConfigSettings.prefix + crypts.encode(search(address.value));
         location.href = encodedUrl;
       });
