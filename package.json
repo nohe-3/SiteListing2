@@ -1,33 +1,31 @@
 {
-  "name": "wakametube",
-  "version": "1.0.8",
-  "main": "server.js",
-  "license": "CC-BY-4.0",
-  "dependencies": {
-    "express": "^4.21.2",
-    "compression": "^1.8.0",
-    "ejs": "^3.1.10",
-    "axios": "^1.8.1",
-    "ytsr": "latest",
-    "ytpl": "latest",
-    "cookie-parser": "^1.4.7",
-    "soundcloud-downloader": "^1.0.0",
-    "youtubei.js": "latest",
-    "undici": "latest",
-    "miniget": "^4.2.3",
-    "cors": "^2.8.5"
-  },
-  "description": "wakame",
-  "engines": {
-    "node": "20.x"
-  },
-  "author": "wakame02",
-  "bugs": {
-    "email": "23h11008@gmail.com"
-  },
-  "devDependencies": {},
+  "name": "xeroxyt-nt-with-youtubei",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.46",
+    "dayjs": "^1.11.11",
+    "express": "^5.1.0",
+    "hls.js": "^1.5.8",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "^6.25.1",
+    "uuid": "^13.0.0",
+    "youtubei.js": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vercel/node": "^3.2.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
