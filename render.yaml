@@ -1,6 +1,12 @@
- services:
+version: 1
+services:
   - type: web
-    name: educational-website
+    name: わかめtube
     env: node
     plan: free
-    startCommand: npm install && npm run build && node server.js
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20

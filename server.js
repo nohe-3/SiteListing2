@@ -1,76 +1,97 @@
-import dotenv from "dotenv";
-import Fastify from "fastify";
-import fastifyStatic from "@fastify/static";
-import fastifyCookie from "@fastify/cookie";
-import { join } from "node:path";
-import { createServer, ServerResponse } from "node:http";
-import { logging, server as wisp } from "@mercuryworkshop/wisp-js/server";
-import { createBareServer } from "@tomphttp/bare-server-node";
-import { MasqrMiddleware } from "./masqr.js";
+"use strict";
+const express = require("express");
+const path = require("path");
+const compression = require("compression");
+const bodyParser = require("body-parser");
+const YouTubeJS = require("youtubei.js");
+const serverYt = require("./server/youtube.js");
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
-dotenv.config();
-ServerResponse.prototype.setMaxListeners(50);
+let app = express();
+let client;
 
-const port = process.env.PORT || 2345, server = createServer(), bare = process.env.BARE !== "false" ? createBareServer("/seal/") : null;
-logging.set_level(logging.NONE);
+app.use(compression());
+app.use(express.static(__dirname + "/public"));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.set("trust proxy", 1);
+app.use(cookieParser());
 
-Object.assign(wisp.options, {
-  dns_method: 'resolve',
-  dns_servers: ['1.1.1.3', '1.0.0.3'],
-  dns_result_order: 'ipv4first',
+app.use((req, res, next) => {
+    if (req.cookies.loginok !== 'ok' && !req.path.includes('login') && !req.path.includes('back')) {
+        return res.redirect('/login');
+    } else {
+        next();
+    }
 });
 
-server.on("upgrade", (req, sock, head) =>
-  bare?.shouldRoute(req) ? bare.routeUpgrade(req, sock, head)
-  : req.url.endsWith("/wisp/") ? wisp.routeRequest(req, sock, head)
-  : sock.end()
-);
-
-const app = Fastify({
-  serverFactory: h => (server.on("request", (req,res) =>
-    bare?.shouldRoute(req) ? bare.routeRequest(req,res) : h(req,res)), server),
-  logger: false,
-  keepAliveTimeout: 30000,
-  connectionTimeout: 60000,
-  forceCloseConnections: true
+app.get('/', (req, res) => {
+  if (req.query.r === 'y') {
+    res.render("home/index");
+  } else {
+    res.redirect('/wkt');
+  }
 });
 
-await app.register(fastifyCookie);
-
-app.register(fastifyStatic, {
-  root: join(import.meta.dirname, "dist"),
-  prefix: "/",
-  decorateReply: true,
-  maxAge: 86400000,
-  immutable: true,
-  cacheControl: true,
-  etag: true,
-  lastModified: true
+app.get('/app', (req, res) => {
+  res.render("app/list");
 });
 
-if (process.env.MASQR === "true")
-  app.addHook("onRequest", MasqrMiddleware);
+app.use("/wkt", require("./routes/wakametube"));
+app.use("/game", require("./routes/game"));
+app.use("/tools", require("./routes/tools"));
+app.use("/pp", require("./routes/proxy"));
+app.use("/wakams", require("./routes/music"));
+app.use("/blog", require("./routes/blog"));
 
-const proxy = (url, type="application/javascript") => async (req, reply) => {
+app.get('/login', (req, res) => {
+    res.render('home/login');
+});
+
+app.get('/watch', (req, res) => {
+  const videoId = req.query.v;
+  if (videoId) {
+    res.redirect(`/wkt/watch/${videoId}`);
+  } else {
+    res.redirect(`/wkt/trend`);
+  }
+});
+app.get('/channel/:id', (req, res) => {
+  const id = req.params.id;
+    res.redirect(`/wkt/c/${id}`);
+});
+app.get('/channel/:id/join', (req, res) => {
+  const id = req.params.id;
+  res.redirect(`/wkt/c/${id}`);
+});
+app.get('/hashtag/:des', (req, res) => {
+  const des = req.params.des;
+  res.redirect(`/wkt/s?q=${des}`);
+});
+
+app.use("/sandbox", require("./routes/sandbox"));
+
+app.use((req, res) => {
+  res.status(404).render("error.ejs", {
+    title: "404 Not found",
+    content: "そのページは存在しません。",
+  });
+});
+app.on("error", console.error);
+async function initInnerTube() {
   try {
-    const res = await fetch(url(req)); if (!res.ok) return reply.code(res.status).send();
-    if (res.headers.get("content-type")) reply.type(res.headers.get("content-type")); else reply.type(type);
-    return reply.send(Buffer.from(await res.arrayBuffer()));
-  } catch { return reply.code(500).send(); }
+    client = await YouTubeJS.Innertube.create({ lang: "ja", location: "JP"});
+    serverYt.setClient(client);
+    const listener = app.listen(process.env.PORT || 3000, () => {
+      console.log(process.pid, "Ready.", listener.address().port);
+    });
+  } catch (e) {
+    console.error(e);
+    setTimeout(initInnerTube, 10000);
+  };
 };
-
-app.get("/js/script.js", proxy(()=> "https://byod.privatedns.org/js/script.js"));
-app.get("/return", async (req, reply) =>
-  req.query?.q
-    ? fetch(`https://duckduckgo.com/ac/?q=${encodeURIComponent(req.query.q)}`)
-        .then(r => r.json()).catch(()=>reply.code(500).send({error:"request failed"}))
-    : reply.code(401).send({ error: "query parameter?" })
-);
-
-app.setNotFoundHandler((req, reply) =>
-  req.raw.method==="GET" && req.headers.accept?.includes("text/html")
-    ? reply.sendFile("public/pages/index.html")
-    : reply.code(404).send({ error: "Not Found" })
-);
-
-app.listen({ port }).then(()=>console.log(`Server running on ${port}`));
+process.on("unhandledRejection", console.error);
+initInnerTube();
